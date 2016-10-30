@@ -644,7 +644,7 @@ void GetMessage()
             omegaRefRight = 0;
           }
         }
-        else if (packetSize == 6) 
+        else if (packetSize == 6)
         {
           tmp = data.substring(1, 4).toInt();
           if (tmp > ZERO && tmp <= PWM_MAX)
@@ -653,9 +653,11 @@ void GetMessage()
             omegaRefBackward = 0;
             omegaRefLeft = 0;
             omegaRefRight = 0;
+
             if (stepperCounter >= 80)
               digitalWrite(stepperMotorSleep, LOW);
-            else {
+            else
+            {
               digitalWrite(stepperMotorSleep, HIGH);
               digitalWrite(stepperMotorDirection, HIGH);
               digitalWrite(stepperMotorStep, HIGH);
@@ -664,315 +666,315 @@ void GetMessage()
               delay(3);
               stepperCounter++;
             }
+
+          }
+          else if (packetSize == 5)
+          {
+            tmp = data.substring(1, 3).toInt();
+            if (tmp > ZERO && tmp <= PWM_MAX)
+            {
+              omegaRefForward = tmp;
+              omegaRefBackward = 0;
+              omegaRefLeft = 0;
+              omegaRefRight = 0;
+              if (stepperCounter >= 80)
+                digitalWrite(stepperMotorSleep, LOW);
+              else {
+                digitalWrite(stepperMotorSleep, HIGH);
+                digitalWrite(stepperMotorDirection, HIGH);
+                digitalWrite(stepperMotorStep, HIGH);
+                delay(3);
+                digitalWrite(stepperMotorStep, LOW);
+                delay(3);
+                stepperCounter++;
+              }
+            }
+          }
+          else if (packetSize == 8)
+          {
+            tmp = data.substring(1, 4).toInt();
+            if (tmp > ZERO && tmp <= PWM_MAX)
+            {
+              omegaRefForward = tmp;
+              omegaRefBackward = 0;
+              omegaRefLeft = 0;
+              omegaRefRight = 0;
+              if (stepperCounter >= -80)
+                digitalWrite(stepperMotorSleep, LOW);
+              else {
+                stepperFlag = true;
+                digitalWrite(stepperMotorSleep, HIGH);
+                digitalWrite(stepperMotorDirection, LOW);
+                digitalWrite(stepperMotorStep, HIGH);
+                delay(3);
+                digitalWrite(stepperMotorStep, LOW);
+                delay(3);
+                stepperCounter--;
+              }
+            }
+          }
+          else if (packetSize == 7)
+          {
+            tmp = data.substring(1, 3).toInt();
+            if (tmp > ZERO && tmp <= PWM_MAX)
+            {
+              omegaRefForward = tmp;
+              omegaRefBackward = 0;
+              omegaRefLeft = 0;
+              omegaRefRight = 0;
+              if (stepperCounter >= -80)
+                digitalWrite(stepperMotorSleep, LOW);
+              else {
+                digitalWrite(stepperMotorSleep, HIGH);
+                digitalWrite(stepperMotorDirection, LOW);
+                digitalWrite(stepperMotorStep, HIGH);
+                delay(3);
+                digitalWrite(stepperMotorStep, LOW);
+                delay(3);
+                stepperCounter--s;
+              }
+            }
           }
         }
-        else if (packetSize == 5)
+        else if (data.substring(0, 1) == "2")
         {
-          tmp = data.substring(1, 3).toInt();
+          //TYLKO PRAWO
+          tmp = data.substring(1, 4).toInt();
+          if (tmp > ZERO && tmp <= PWM_MAX)
+          {
+            omegaRefLeft = tmp;
+            omegaRefBackward = 0;
+            omegaRefForward = 0;
+          }
+        }
+        else if (data.substring(0, 1) == "3")
+        {
+          //TYLKO TYL
+          tmp = data.substring(1, 4).toInt();
+          if (tmp > ZERO && tmp <= PWM_MAX)
+          {
+            omegaRefBackward = tmp;
+            omegaRefForward = 0;
+            omegaRefRight = 0;
+            omegaRefLeft = 0;
+          }
+        }
+        else if (data.substring(0, 1) == "4")
+        {
+          //TYLKO LEWO
+          tmp = data.substring(1, 4).toInt();
+          if (tmp >= ZERO && tmp <= PWM_MAX)
+          {
+            omegaRefRight = tmp;
+            omegaRefBackward = 0;
+            omegaRefForward = 0;
+          }
+        }
+        else if (data.substring(0, 1) == "5")
+        {
+          //przod prawo
+          if (packetSize == 7)
+          {
+            if (data.substring(3, 4) == " ")
+            {
+              tmp = data.substring(1, 3).toInt();
+              tmp2 = data.substring(4, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = tmp;
+                omegaRefLeft = tmp2;
+                omegaRefRight = 0;
+                omegaRefBackward = 0;
+              }
+            }
+            else
+            {
+              tmp = data.substring(1, 4).toInt();
+              tmp2 = data.substring(5, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = tmp;
+                omegaRefLeft = tmp2;
+                omegaRefRight = 0;
+                omegaRefBackward = 0;
+              }
+            }
+          }
+          else if (packetSize == 8)
+          {
+            tmp = data.substring(1, 4).toInt();
+            tmp2 = data.substring(5, 8).toInt();
+          }
           if (tmp > ZERO && tmp <= PWM_MAX)
           {
             omegaRefForward = tmp;
-            omegaRefBackward = 0;
-            omegaRefLeft = 0;
+            omegaRefLeft = tmp2;
             omegaRefRight = 0;
-            if (stepperCounter >= 80)
-              digitalWrite(stepperMotorSleep, LOW);
-            else {
-              digitalWrite(stepperMotorSleep, HIGH);
-              digitalWrite(stepperMotorDirection, HIGH);
-              digitalWrite(stepperMotorStep, HIGH);
-              delay(3);
-              digitalWrite(stepperMotorStep, LOW);
-              delay(3);
-              stepperCounter++;
-            }
+            omegaRefBackward = 0;
           }
         }
-        else if (packetSize == 8)
+        else if (data.substring(0, 1) == "6")
         {
-          tmp = data.substring(1, 4).toInt();
+          //przod lewo
+          if (packetSize == 7)
+          {
+            if (data.substring(3, 4) == " ")
+            {
+              tmp = data.substring(1, 3).toInt();
+              tmp2 = data.substring(4, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = tmp;
+                omegaRefLeft = 0;
+                omegaRefRight = tmp2;
+                omegaRefBackward = 0;
+              }
+            }
+            else
+            {
+              tmp = data.substring(1, 4).toInt();
+              tmp2 = data.substring(5, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = tmp;
+                omegaRefLeft = 0;
+                omegaRefRight = tmp2;
+                omegaRefBackward = 0;
+              }
+            }
+          }
+          else if (packetSize == 8)
+          {
+            tmp = data.substring(1, 4).toInt();
+            tmp2 = data.substring(5, 8).toInt();
+          }
           if (tmp > ZERO && tmp <= PWM_MAX)
           {
             omegaRefForward = tmp;
-            omegaRefBackward = 0;
             omegaRefLeft = 0;
-            omegaRefRight = 0;
-            if (stepperCounter >= 80)
-              digitalWrite(stepperMotorSleep, LOW);
-            else {
-              stepperFlag = true;
-              digitalWrite(stepperMotorSleep, HIGH);
-              digitalWrite(stepperMotorDirection, LOW);
-              digitalWrite(stepperMotorStep, HIGH);
-              delay(3);
-              digitalWrite(stepperMotorStep, LOW);
-              delay(3);
-              stepperCounter++;
-            }
+            omegaRefRight = tmp2;
+            omegaRefBackward = 0;
           }
         }
-        else if (packetSize == 7)
+        else if (data.substring(0, 1) == "7")
         {
-          tmp = data.substring(1, 3).toInt();
+          //tyl prawo
+          if (packetSize == 7)
+          {
+            if (data.substring(3, 4) == " ")
+            {
+              tmp = data.substring(1, 3).toInt();
+              tmp2 = data.substring(4, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = 0;
+                omegaRefLeft = tmp2;
+                omegaRefRight = 0;
+                omegaRefBackward = tmp;
+              }
+            }
+            else
+            {
+              tmp = data.substring(1, 4).toInt();
+              tmp2 = data.substring(5, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = 0;
+                omegaRefLeft = tmp2;
+                omegaRefRight = 0;
+                omegaRefBackward = tmp;
+              }
+            }
+          }
+          if (packetSize == 8)
+          {
+            tmp = data.substring(1, 4).toInt();
+            tmp2 = data.substring(5, 8).toInt();
+          }
           if (tmp > ZERO && tmp <= PWM_MAX)
           {
-            omegaRefForward = tmp;
-            omegaRefBackward = 0;
-            omegaRefLeft = 0;
+            omegaRefForward = 0;
+            omegaRefLeft = tmp2;
             omegaRefRight = 0;
-            if (stepperCounter >= 80)
-              digitalWrite(stepperMotorSleep, LOW);
-            else {
-              digitalWrite(stepperMotorSleep, HIGH);
-              digitalWrite(stepperMotorDirection, LOW);
-              digitalWrite(stepperMotorStep, HIGH);
-              delay(3);
-              digitalWrite(stepperMotorStep, LOW);
-              delay(3);
-              stepperCounter++;
-            }
+            omegaRefBackward = tmp;
           }
         }
-      }
-      else if (data.substring(0, 1) == "2")
-      {
-        //TYLKO PRAWO
-        tmp = data.substring(1, 4).toInt();
-        if (tmp > ZERO && tmp <= PWM_MAX)
+        else if (data.substring(0, 1) == "8")
         {
-          omegaRefLeft = tmp;
-          omegaRefBackward = 0;
-          omegaRefForward = 0;
-        }
-      }
-      else if (data.substring(0, 1) == "3")
-      {
-        //TYLKO TYL
-        tmp = data.substring(1, 4).toInt();
-        if (tmp > ZERO && tmp <= PWM_MAX)
-        {
-          omegaRefBackward = tmp;
-          omegaRefForward = 0;
-          omegaRefRight = 0;
-          omegaRefLeft = 0;
-        }
-      }
-      else if (data.substring(0, 1) == "4")
-      {
-        //TYLKO LEWO
-        tmp = data.substring(1, 4).toInt();
-        if (tmp >= ZERO && tmp <= PWM_MAX)
-        {
-          omegaRefRight = tmp;
-          omegaRefBackward = 0;
-          omegaRefForward = 0;
-        }
-      }
-      else if (data.substring(0, 1) == "5")
-      {
-        //przod prawo
-        if (packetSize == 7)
-        {
-          if (data.substring(3, 4) == " ")
+          //tyl lewo
+          if (packetSize == 7)
           {
-            tmp = data.substring(1, 3).toInt();
-            tmp2 = data.substring(4, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
+            if (data.substring(3, 4) == " ")
             {
-              omegaRefForward = tmp;
-              omegaRefLeft = tmp2;
-              omegaRefRight = 0;
-              omegaRefBackward = 0;
+              tmp = data.substring(1, 3).toInt();
+              tmp2 = data.substring(4, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = 0;
+                omegaRefLeft = 0;
+                omegaRefRight = tmp2;
+                omegaRefBackward = tmp;
+              }
+            }
+            else
+            {
+              tmp = data.substring(1, 4).toInt();
+              tmp2 = data.substring(5, 7).toInt();
+              if (tmp > ZERO && tmp <= PWM_MAX)
+              {
+                omegaRefForward = 0;
+                omegaRefLeft = 0;
+                omegaRefRight = tmp2;
+                omegaRefBackward = tmp;
+              }
             }
           }
-          else
+          if (packetSize == 8)
           {
             tmp = data.substring(1, 4).toInt();
-            tmp2 = data.substring(5, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
-            {
-              omegaRefForward = tmp;
-              omegaRefLeft = tmp2;
-              omegaRefRight = 0;
-              omegaRefBackward = 0;
-            }
+            tmp2 = data.substring(5, 8).toInt();
           }
-        }
-        else if (packetSize == 8)
-        {
-          tmp = data.substring(1, 4).toInt();
-          tmp2 = data.substring(5, 8).toInt();
-        }
-        if (tmp > ZERO && tmp <= PWM_MAX)
-        {
-          omegaRefForward = tmp;
-          omegaRefLeft = tmp2;
-          omegaRefRight = 0;
-          omegaRefBackward = 0;
-        }
-      }
-      else if (data.substring(0, 1) == "6")
-      {
-        //przod lewo
-        if (packetSize == 7)
-        {
-          if (data.substring(3, 4) == " ")
+          if (tmp > ZERO && tmp <= PWM_MAX)
           {
-            tmp = data.substring(1, 3).toInt();
-            tmp2 = data.substring(4, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
-            {
-              omegaRefForward = tmp;
-              omegaRefLeft = 0;
-              omegaRefRight = tmp2;
-              omegaRefBackward = 0;
-            }
+            omegaRefForward = 0;
+            omegaRefLeft = 0;
+            omegaRefRight = tmp2;
+            omegaRefBackward = tmp;
           }
-          else
+        }
+        /*else if (data.substring(0, 2) == "up")
           {
-            tmp = data.substring(1, 4).toInt();
-            tmp2 = data.substring(5, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
-            {
-              omegaRefForward = tmp;
-              omegaRefLeft = 0;
-              omegaRefRight = tmp2;
-              omegaRefBackward = 0;
-            }
+          if (stepperCounter >= 80)
+            digitalWrite(stepperMotorSleep, LOW);
+          else {
+            digitalWrite(stepperMotorSleep, HIGH);
+            digitalWrite(stepperMotorDirection, HIGH);
+            digitalWrite(stepperMotorStep, HIGH);
+            delay(3);
+            digitalWrite(stepperMotorStep, LOW);
+            delay(3);
+            stepperCounter++;
           }
-        }
-        else if (packetSize == 8)
-        {
-          tmp = data.substring(1, 4).toInt();
-          tmp2 = data.substring(5, 8).toInt();
-        }
-        if (tmp > ZERO && tmp <= PWM_MAX)
-        {
-          omegaRefForward = tmp;
-          omegaRefLeft = 0;
-          omegaRefRight = tmp2;
-          omegaRefBackward = 0;
-        }
-      }
-      else if (data.substring(0, 1) == "7")
-      {
-        //tyl prawo
-        if (packetSize == 7)
-        {
-          if (data.substring(3, 4) == " ")
+          }
+          else if (data.substring(0, 4) == "down")
           {
-            tmp = data.substring(1, 3).toInt();
-            tmp2 = data.substring(4, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
-            {
-              omegaRefForward = 0;
-              omegaRefLeft = tmp2;
-              omegaRefRight = 0;
-              omegaRefBackward = tmp;
-            }
-          }
-          else
-          {
-            tmp = data.substring(1, 4).toInt();
-            tmp2 = data.substring(5, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
-            {
-              omegaRefForward = 0;
-              omegaRefLeft = tmp2;
-              omegaRefRight = 0;
-              omegaRefBackward = tmp;
-            }
-          }
-        }
-        if (packetSize == 8)
-        {
-          tmp = data.substring(1, 4).toInt();
-          tmp2 = data.substring(5, 8).toInt();
-        }
-        if (tmp > ZERO && tmp <= PWM_MAX)
-        {
-          omegaRefForward = 0;
-          omegaRefLeft = tmp2;
-          omegaRefRight = 0;
-          omegaRefBackward = tmp;
-        }
-      }
-      else if (data.substring(0, 1) == "8")
-      {
-        //tyl lewo
-        if (packetSize == 7)
-        {
-          if (data.substring(3, 4) == " ")
-          {
-            tmp = data.substring(1, 3).toInt();
-            tmp2 = data.substring(4, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
-            {
-              omegaRefForward = 0;
-              omegaRefLeft = 0;
-              omegaRefRight = tmp2;
-              omegaRefBackward = tmp;
-            }
-          }
-          else
-          {
-            tmp = data.substring(1, 4).toInt();
-            tmp2 = data.substring(5, 7).toInt();
-            if (tmp > ZERO && tmp <= PWM_MAX)
-            {
-              omegaRefForward = 0;
-              omegaRefLeft = 0;
-              omegaRefRight = tmp2;
-              omegaRefBackward = tmp;
-            }
-          }
-        }
-        if (packetSize == 8)
-        {
-          tmp = data.substring(1, 4).toInt();
-          tmp2 = data.substring(5, 8).toInt();
-        }
-        if (tmp > ZERO && tmp <= PWM_MAX)
-        {
-          omegaRefForward = 0;
-          omegaRefLeft = 0;
-          omegaRefRight = tmp2;
-          omegaRefBackward = tmp;
-        }
-      }
-      /*else if (data.substring(0, 2) == "up")
-      {
-        if (stepperCounter >= 80)
-          digitalWrite(stepperMotorSleep, LOW);
-        else {
           digitalWrite(stepperMotorSleep, HIGH);
-          digitalWrite(stepperMotorDirection, HIGH);
+          digitalWrite(stepperMotorDirection, LOW);
           digitalWrite(stepperMotorStep, HIGH);
           delay(3);
           digitalWrite(stepperMotorStep, LOW);
           delay(3);
-          stepperCounter++;
+          } */
+        else
+        {
+          omegaRefBackward = ZERO;
+          omegaRefRight = ZERO;
+          omegaRefForward = ZERO;
+          omegaRefLeft = ZERO;
+          digitalWrite(stepperMotorStep, LOW);
+          digitalWrite(stepperMotorSleep, LOW);
         }
       }
-      else if (data.substring(0, 4) == "down")
-      {
-        digitalWrite(stepperMotorSleep, HIGH);
-        digitalWrite(stepperMotorDirection, LOW);
-        digitalWrite(stepperMotorStep, HIGH);
-        delay(3);
-        digitalWrite(stepperMotorStep, LOW);
-        delay(3);
-      } */
-      else
-      {
-        omegaRefBackward = ZERO;
-        omegaRefRight = ZERO;
-        omegaRefForward = ZERO;
-        omegaRefLeft = ZERO;
-        digitalWrite(stepperMotorStep, LOW);
-        digitalWrite(stepperMotorSleep, LOW);
-      }
+      //SendMessage();
     }
-    //SendMessage();
   }
-}
