@@ -94,6 +94,7 @@ const int stepperMotorAngleLimit = 22; // Jeden krok to 1.8st. 40/1.8 = ~22
 const int stepperMotorSleep = 53;
 
 int stepperCounter = 0;
+boolean stepperFlag = true; // True dla "Up"
 ///////////////////////////////////
 
 String motorSpeedUDP;
@@ -699,6 +700,7 @@ void GetMessage()
             if (stepperCounter >= 80)
               digitalWrite(stepperMotorSleep, LOW);
             else {
+              stepperFlag = true;
               digitalWrite(stepperMotorSleep, HIGH);
               digitalWrite(stepperMotorDirection, LOW);
               digitalWrite(stepperMotorStep, HIGH);
@@ -938,7 +940,7 @@ void GetMessage()
           omegaRefBackward = tmp;
         }
       }
-      else if (data.substring(0, 2) == "up")
+      /*else if (data.substring(0, 2) == "up")
       {
         if (stepperCounter >= 80)
           digitalWrite(stepperMotorSleep, LOW);
@@ -960,7 +962,7 @@ void GetMessage()
         delay(3);
         digitalWrite(stepperMotorStep, LOW);
         delay(3);
-      }
+      } */
       else
       {
         omegaRefBackward = ZERO;
@@ -974,4 +976,3 @@ void GetMessage()
     //SendMessage();
   }
 }
-
