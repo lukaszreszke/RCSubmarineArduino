@@ -439,8 +439,8 @@ void MotorControlWithRegulation()
     digitalWrite(M1_B, LOW);
     digitalWrite(M2_B, LOW);
 
-    m1TurnTemp = ((omegaRefForward + omegaRefLeft) / 2);             //PWM silnik prawy
-    m2TurnTemp = ((omegaRefForward + omegaRefLeft) / 2) - turnConst;  //PWM silnik lewy
+    m1TurnTemp = ((omegaRefForward + omegaRefRight) / 2);             //PWM silnik prawy
+    m2TurnTemp = ((omegaRefForward + omegaRefRight) / 2) - turnConst;  //PWM silnik lewy
 
     omegaRefBackward = 0;
 
@@ -469,8 +469,8 @@ void MotorControlWithRegulation()
     digitalWrite(M1_B, HIGH);
     digitalWrite(M2_B, HIGH);
 
-    m1TurnTemp = ((omegaRefForward + omegaRefLeft) / 2);             //PWM silnik prawy
-    m2TurnTemp = ((omegaRefForward + omegaRefLeft) / 2) - turnConst; //PWM silnik lewy
+    m1TurnTemp = ((omegaRefForward + omegaRefRight) / 2);             //PWM silnik prawy
+    m2TurnTemp = ((omegaRefForward + omegaRefRight) / 2) - turnConst; //PWM silnik lewy
 
     omegaRefBackward = 0;
 
@@ -681,7 +681,7 @@ void GetMessage()
             omegaRefBackward = 0;
             omegaRefLeft = 0;
             omegaRefRight = 0;
-            if (stepperCounter >= 80 && stepperFlag == true)
+            if (stepperCounter >= 80 && stepperFlag = true)
               digitalWrite(stepperMotorSleep, LOW);
             else {
               digitalWrite(stepperMotorSleep, HIGH);
@@ -705,7 +705,7 @@ void GetMessage()
             omegaRefBackward = 0;
             omegaRefLeft = 0;
             omegaRefRight = 0;
-            if (stepperCounter <= -80 && stepperFlag == false)
+            if (stepperCounter >= -80 && stepperFlag == false)
               digitalWrite(stepperMotorSleep, LOW);
             else {
               digitalWrite(stepperMotorSleep, HIGH);
@@ -729,7 +729,7 @@ void GetMessage()
             omegaRefBackward = 0;
             omegaRefLeft = 0;
             omegaRefRight = 0;
-            if (stepperCounter <= -80 && stepperFlag == false)
+            if (stepperCounter >= -80 && stepperFlag == false)
               digitalWrite(stepperMotorSleep, LOW);
             else {
               digitalWrite(stepperMotorSleep, HIGH);
