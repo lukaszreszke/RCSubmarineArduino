@@ -11,6 +11,20 @@ LSM6 imu;
 
 char report[80];
 
+///////////Vertical motor section///////////////////
+int M3_A = 32;
+int M3_B = 33;
+int refSpeedM3 = 13;
+double acceleration;
+double acceleration_prev = 0;
+double acceleration_diff = 0;
+volatile unsigned long start;
+const double verticalMotorOnValue = 0.1;
+int counterSpeedValue = 100;
+boolean counterSpeedFlag = false;
+///////////////////////////////////////////////
+
+
 byte mac[] = {
   0x90, 0xA2, 0xDA, 0x0D, 0xA3, 0x12
 };
@@ -42,13 +56,12 @@ int sensorX = A10;
 int sensorY = A11;
 
 //int pumpVoltage = A2;
-int pumpB = 13;
+
 
 int refSpeedM1 = 6; // pin that is used for setpointing Motor1 reference speed
 int refSpeedM2 = 5;
 
 // Variables for counting time
-volatile unsigned long start;
 volatile unsigned long finish;
 volatile int dif;
 volatile int difM2;
@@ -92,6 +105,8 @@ const int stepperMotorDirection = 22;
 const int stepperMotorStep = 29;
 const int stepperMotorAngleLimit = 22; // Jeden krok to 1.8st. 40/1.8 = ~22
 const int stepperMotorSleep = 53;
+const int stepperAngle = 320;
+float stepperAngleCalculated = 0;
 
 int stepperCounter = 0;
 boolean stepperFlag = true; // True dla "Up"
@@ -99,9 +114,6 @@ boolean stepperFlag = true; // True dla "Up"
 
 String motorSpeedUDP;
 char udpArray[30];
-
-unsigned long s = 0;
-unsigned long f = 0;
 
 void setup()
 {
@@ -112,10 +124,6 @@ void setup()
   pinMode(stepperMotorSleep, OUTPUT);
   digitalWrite(stepperMotorSleep, LOW);
 
-
-  pinMode(pumpB, OUTPUT);
-  digitalWrite(pumpB, LOW);
-
   //  pinMode(pumpVoltage, OUTPUT);
   //  analogWrite(pumpVoltage, 0);
 
@@ -124,10 +132,16 @@ void setup()
   pinMode(M1_B, OUTPUT);
   pinMode(M2_A, OUTPUT);
   pinMode(M2_B, OUTPUT);
+  pinMode(M3_A, OUTPUT);
+  pinMode(M3_B, OUTPUT);
 
   pinMode(refSpeedM1, OUTPUT);
   pinMode(refSpeedM2, OUTPUT);
+  pinMode(refSpeedM3, OUTPUT);
 
+  digitalWrite(M3_A, LOW);
+  digitalWrite(M3_B, LOW);
+  
   counterCW = 0;      //Liczniki enkoderów
   counterCCW = 0;
   counterCWM2 = 0;
@@ -195,7 +209,7 @@ void PrintToWebserver()
 
       client.println(motorSpeed);
       client.println(motorSpeedM2);
-      client.println(stepperCounter);
+      client.println(stepperAngleCalculated);
       /* client.print("GyroX = ");
         client.println(imu.g.x);
         client.print("GyroY = ");
@@ -283,31 +297,6 @@ void EncoderControl()
     motorSpeedM2 = (int)(difM2 / 5); // 300.0 * 60.0;
   }
 }
-
-void PumpControl()
-{
-  if (digitalRead(pumpOn) == HIGH)
-  {
-    pumpFlag = true;
-  }
-  else
-    pumpFlag = false;
-
-
-  if (pumpFlag == true)
-  {
-    digitalWrite(pumpB, HIGH);
-    // analogWrite(pumpVoltage, 255);
-  }
-  else
-  {
-    digitalWrite(pumpB, LOW);
-    //    analogWrite(pumpVoltage, 0);
-  }
-}
-
-
-
 /* TESTOWANIE FUNKCJI PREDKOSCI SILNIKA Z REGULATOREM
 
 
@@ -655,7 +644,7 @@ void GetMessage()
             omegaRefLeft = 0;
             omegaRefRight = 0;
 
-            if (stepperCounter >= 80 && stepperFlag == true)
+            if (stepperCounter >= stepperAngle && stepperFlag == true)
               digitalWrite(stepperMotorSleep, LOW);
             else
             {
@@ -681,7 +670,7 @@ void GetMessage()
             omegaRefBackward = 0;
             omegaRefLeft = 0;
             omegaRefRight = 0;
-            if (stepperCounter >= 80 && stepperFlag == true)
+            if (stepperCounter >= stepperAngle && stepperFlag == true)
               digitalWrite(stepperMotorSleep, LOW);
             else {
               digitalWrite(stepperMotorSleep, HIGH);
@@ -705,7 +694,7 @@ void GetMessage()
             omegaRefBackward = 0;
             omegaRefLeft = 0;
             omegaRefRight = 0;
-            if (stepperCounter <= -80 && stepperFlag == false)
+            if (stepperCounter <= -stepperAngle && stepperFlag == false)
               digitalWrite(stepperMotorSleep, LOW);
             else {
               digitalWrite(stepperMotorSleep, HIGH);
@@ -729,7 +718,7 @@ void GetMessage()
             omegaRefBackward = 0;
             omegaRefLeft = 0;
             omegaRefRight = 0;
-            if (stepperCounter <= -80 && stepperFlag == false)
+            if (stepperCounter <= -stepperAngle && stepperFlag == false)
               digitalWrite(stepperMotorSleep, LOW);
             else {
               digitalWrite(stepperMotorSleep, HIGH);
@@ -981,6 +970,7 @@ void GetMessage()
         digitalWrite(stepperMotorStep, LOW);
         digitalWrite(stepperMotorSleep, LOW);
       }
+      stepperAngleCalculated = stepperCounter * 0.1125;
     }
     //SendMessage();
   }
